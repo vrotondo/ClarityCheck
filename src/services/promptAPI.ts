@@ -1,17 +1,4 @@
-import { Issue, IssueType } from '../types';
-
-declare global {
-    interface Window {
-        ai?: {
-            languageModel?: {
-                capabilities(): Promise<{
-                    available: string;
-                }>;
-                create(options?: any): Promise<any>;
-            };
-        };
-    }
-}
+import { Issue } from '../types';
 
 export class PromptAPIService {
     private session: any = null;
