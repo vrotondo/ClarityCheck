@@ -10,6 +10,7 @@ export function useAICapabilities() {
     });
     const [isChecking, setIsChecking] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [useMockMode, setUseMockMode] = useState(false);
 
     useEffect(() => {
         checkCapabilities();
@@ -26,6 +27,15 @@ export function useAICapabilities() {
                 summarizerAPI: false,
                 writerAPI: false
             };
+
+            // Check if window.ai exists at all
+            if (!window.ai) {
+                console.warn('window.ai is not available - using mock mode');
+                setUseMockMode(true);
+                setCapabilities(results);
+                setIsChecking(false);
+                return;
+            }
 
             // Check Prompt API (Language Model)
             if (window.ai?.languageModel) {
@@ -69,13 +79,14 @@ export function useAICapabilities() {
 
             setCapabilities(results);
 
-            // Check if at least Prompt API is available (minimum requirement)
-            if (!results.promptAPI) {
-                setError('Chrome Built-in AI APIs are not available. Please ensure you are using Chrome Canary with the appropriate flags enabled.');
+            // If no APIs are available, use mock mode
+            if (!results.promptAPI && !results.rewriterAPI && !results.summarizerAPI && !results.writerAPI) {
+                console.warn('No Chrome AI APIs available - using mock mode');
+                setUseMockMode(true);
             }
         } catch (err) {
-            setError('Failed to check AI capabilities. Please ensure Chrome Built-in AI is properly configured.');
-            console.error('Capability check error:', err);
+            console.warn('Capability check error - using mock mode:', err);
+            setUseMockMode(true);
         } finally {
             setIsChecking(false);
         }
@@ -85,6 +96,7 @@ export function useAICapabilities() {
         capabilities,
         isChecking,
         error,
-        hasMinimumCapabilities: capabilities.promptAPI
+        hasMinimumCapabilities: capabilities.promptAPI || useMockMode,
+        useMockMode
     };
 }

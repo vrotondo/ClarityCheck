@@ -1,92 +1,195 @@
-# ClarityCheck
+# ClarityCheck - Instruction Quality Analyzer
 
-"ClarityCheck" - Instruction Quality Analyzer
-Concept: A web app/extension that analyzes instructions in real-time and flags potential issues.
-Features:
+![Chrome Built-in AI](https://img.shields.io/badge/Chrome-Built--in%20AI-4285F4?logo=google-chrome)
+![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.2-3178C6?logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?logo=tailwind-css)
 
-Paste or type instructions (emails, Slack messages, task descriptions)
-AI identifies: missing steps, vague language, ambiguous pronouns, unclear deadlines
-Provides a "clarity score" with specific improvement suggestions
-Offers rewritten versions with better structure
-Generates a checklist of action items from the instructions
+**ClarityCheck** is an AI-powered web application that analyzes instructions in real-time to identify clarity issues and suggest improvements. Built for the Google Chrome Built-in AI Challenge 2025.
 
-APIs Used:
+## 🎯 Problem Statement
 
-Prompt API: Analyze instruction quality, identify gaps, structure analysis
-Rewriter API: Generate clearer versions
-Summarizer API: Extract key action items
-Writer API: Fill in missing steps or context
+Poor communication costs organizations time and money. When managers give instructions, critical information often gets lost:
+- Missing steps or context
+- Vague language and ambiguous terms
+- Unclear deadlines and responsibilities
+- Assumed knowledge that isn't shared
 
-Why it's great: Solves your problem directly, works offline (perfect for client-side AI), and has clear utility for managers AND employees.
+ClarityCheck solves this by providing instant, AI-powered feedback on instruction quality.
 
-Technical Stack
+## ✨ Features
 
-Frontend: React + TypeScript + Tailwind CSS
-AI: Chrome Built-in AI APIs (Prompt, Rewriter, Summarizer, Writer)
-State Management: React hooks (useState, useEffect)
-No backend needed - Everything runs client-side!
+### 📊 Clarity Scoring
+- Real-time analysis of instruction quality (0-100 score)
+- Visual indicators for score interpretation
+- Detailed breakdown of issues found
 
-Core Components Architecture
-ClarityCheck/
-├── src/
-│   ├── components/
-│   │   ├── InputPanel.tsx          # Where users paste instructions
-│   │   ├── AnalysisPanel.tsx       # Shows clarity score & issues
-│   │   ├── ImprovementPanel.tsx    # Displays rewritten version
-│   │   ├── ActionItemsPanel.tsx    # Extracted checklist
-│   │   └── LoadingState.tsx        # AI processing indicator
-│   ├── services/
-│   │   ├── promptAPI.ts            # Wrapper for Prompt API
-│   │   ├── rewriterAPI.ts          # Wrapper for Rewriter API
-│   │   ├── summarizerAPI.ts        # Wrapper for Summarizer API
-│   │   └── writerAPI.ts            # Wrapper for Writer API
-│   ├── hooks/
-│   │   ├── useAIAnalysis.ts        # Custom hook for analysis
-│   │   └── useAICapabilities.ts    # Check API availability
-│   ├── types/
-│   │   └── index.ts                # TypeScript interfaces
-│   ├── utils/
-│   │   └── scoringLogic.ts         # Calculate clarity score
-│   └── App.tsx                     # Main application
-Data Flow
+### 🔍 Issue Detection
+Identifies seven types of clarity problems:
+- **Missing Steps** - Gaps in the process
+- **Vague Language** - Ambiguous or unclear terms
+- **Ambiguous References** - Unclear pronouns or references
+- **Unclear Deadlines** - Missing or vague timelines
+- **Assumed Knowledge** - Unexplained concepts or context
+- **Missing Context** - Insufficient background information
+- **Unclear Responsibility** - Unspecified who should do what
 
-User Input → InputPanel
-Trigger Analysis → useAIAnalysis hook
-Parallel API Calls:
+### ✏️ Improved Versions
+- AI-generated rewritten instructions
+- Enhanced clarity and specificity
+- Added missing steps and context
+- Copy functionality for easy use
 
-Prompt API: Analyze issues, calculate score
-Rewriter API: Generate improved version
-Summarizer API: Extract action items
-Writer API: Fill gaps if needed
+### ✅ Action Item Extraction
+- Automatic extraction of tasks from instructions
+- Interactive checklist with completion tracking
+- Priority indicators (high/medium/low)
+- Progress visualization
 
+## 🛠️ Technology Stack
 
-Display Results → Analysis, Improvement, ActionItems panels
+### AI APIs Used
+- **Prompt API** - Analyzes instructions and identifies issues
+- **Rewriter API** - Generates improved versions with better clarity
+- **Summarizer API** - Extracts action items from instructions
+- **Writer API** - Fills in missing steps and context
 
-Key Features for MVP
+### Frontend Stack
+- **React 18** - UI framework
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first styling
+- **Vite** - Fast build tool and dev server
 
-Clarity Score (0-100)
+## 🚀 Getting Started
 
-Deductions for: vague language, missing steps, unclear deadlines, ambiguous terms
-Visual indicator (color-coded)
+### Prerequisites
+- Chrome Canary (version 127 or later)
+- Node.js (version 18 or later)
+- npm or yarn
 
+### Installation
 
-Issue Detection
+See [SETUP.md](SETUP.md) for detailed setup instructions.
 
-Missing information
-Vague language
-Ambiguous references
-No clear deadline
-Assumed knowledge
+**Quick Start:**
+```bash
+# Install dependencies
+npm install
 
+# Start development server
+npm run dev
+```
 
-Improved Version
+Then open `http://localhost:5173` in Chrome Canary with AI flags enabled.
 
-Rewritten with clarity
-Added missing steps
-Explicit timelines
+## 💡 How It Works
 
+1. **User Input**: Paste or type instructions into the input panel
+2. **AI Analysis**: Four AI APIs work in parallel:
+   - Prompt API analyzes for clarity issues
+   - Rewriter API generates improved version
+   - Summarizer API extracts action items
+   - Writer API fills missing information
+3. **Results Display**: Shows clarity score, identified issues, improved version, and actionable checklist
+4. **User Action**: Copy improved text or use the checklist to complete tasks
 
-Action Items Checklist
+## 🎨 User Interface
 
-Numbered, actionable steps
-Copy-friendly format
+### Key Components
+- **Input Panel** - Text input with example instructions
+- **Analysis Panel** - Clarity score and issue breakdown
+- **Improvement Panel** - AI-rewritten version
+- **Action Items Panel** - Interactive task checklist
+- **Loading States** - Visual feedback during AI processing
+
+### Design Principles
+- Clean, professional interface
+- Color-coded severity indicators
+- Responsive layout (desktop and mobile)
+- Accessible design with clear hierarchy
+
+## 📦 Project Structure
+
+```
+src/
+├── components/       # React UI components
+├── hooks/           # Custom React hooks
+├── services/        # AI API service wrappers
+├── types/           # TypeScript type definitions
+├── utils/           # Utility functions
+├── App.tsx          # Main application component
+├── main.tsx         # React entry point
+└── index.css        # Global styles
+```
+
+## 🔒 Privacy & Security
+
+All processing happens **locally on your device**:
+- No data sent to external servers
+- Instructions never leave your computer
+- Works offline once AI model is downloaded
+- Perfect for sensitive workplace communications
+
+## 🎯 Use Cases
+
+### For Managers
+- Review instructions before sending to team
+- Improve clarity of task assignments
+- Reduce miscommunication and rework
+- Ensure all necessary context is included
+
+### For Employees
+- Clarify vague instructions received
+- Extract concrete action items
+- Identify missing information to request
+- Track task completion
+
+### For Teams
+- Standardize communication quality
+- Reduce back-and-forth clarification requests
+- Improve remote work communication
+- Document processes more clearly
+
+## 🏆 Chrome Built-in AI Challenge 2025
+
+This project was built for the Google Chrome Built-in AI Challenge 2025.
+
+**Challenge Goals Met:**
+- ✅ Uses multiple Chrome Built-in AI APIs (Prompt, Rewriter, Summarizer, Writer)
+- ✅ Solves a real workplace communication problem
+- ✅ Works entirely client-side with privacy benefits
+- ✅ Demonstrates innovative AI use cases
+- ✅ Provides immediate, practical value
+
+## 🔮 Future Enhancements
+
+### Planned Features
+- Chrome Extension version (analyze any text on any webpage)
+- History/saved analyses
+- Custom issue types and rules
+- Team templates and style guides
+- Integration with Slack, Gmail, Google Docs
+- Multilingual support with Translator API
+- Export to various formats (PDF, Markdown, etc.)
+
+## 📝 License
+
+MIT License - See LICENSE file for details
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📧 Contact
+
+For questions or feedback about this project, please open an issue on GitHub.
+
+## 🙏 Acknowledgments
+
+- Google Chrome Team for Built-in AI APIs
+- Anthropic Claude for development assistance
+- Chrome Built-in AI Challenge 2025 organizers
+
+---
+
+**Built with ❤️ using Chrome Built-in AI APIs**

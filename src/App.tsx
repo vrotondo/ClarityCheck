@@ -8,8 +8,8 @@ import { useAICapabilities } from './hooks/useAICapabilities';
 import { useAIAnalysis } from './hooks/useAIAnalysis';
 
 function App() {
-    const { capabilities, isChecking, error: capabilityError, hasMinimumCapabilities } = useAICapabilities();
-    const { result, analyzeText, reset } = useAIAnalysis();
+    const { capabilities, isChecking, useMockMode } = useAICapabilities();
+    const { result, analyzeText, reset } = useAIAnalysis(useMockMode);
 
     // Show loading state while checking capabilities
     if (isChecking) {
@@ -17,43 +17,6 @@ function App() {
             <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
                 <div className="bg-white rounded-lg shadow-xl p-8">
                     <LoadingState message="Checking AI capabilities..." />
-                </div>
-            </div>
-        );
-    }
-
-    // Show error if AI is not available
-    if (capabilityError || !hasMinimumCapabilities) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-                <div className="bg-white rounded-lg shadow-xl p-8 max-w-2xl">
-                    <div className="text-center">
-                        <div className="text-6xl mb-4">⚠️</div>
-                        <h2 className="text-2xl font-bold text-gray-800 mb-4">Chrome Built-in AI Not Available</h2>
-                        <p className="text-gray-600 mb-6">
-                            {capabilityError || 'ClarityCheck requires Chrome Built-in AI APIs to function.'}
-                        </p>
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left">
-                            <p className="font-semibold text-gray-800 mb-2">Setup Instructions:</p>
-                            <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700">
-                                <li>Use Chrome Canary (version 127 or later)</li>
-                                <li>Enable chrome://flags/#optimization-guide-on-device-model</li>
-                                <li>Enable chrome://flags/#prompt-api-for-gemini-nano</li>
-                                <li>Restart your browser</li>
-                                <li>Open DevTools → Console and run: <code className="bg-gray-100 px-1">await ai.languageModel.create()</code></li>
-                            </ol>
-                        </div>
-                        <div className="mt-6">
-                            <a
-                                href="https://developer.chrome.com/docs/ai/built-in"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 hover:text-blue-700 font-medium"
-                            >
-                                View Setup Documentation →
-                            </a>
-                        </div>
-                    </div>
                 </div>
             </div>
         );
@@ -74,10 +37,17 @@ function App() {
                             <p className="text-gray-600 mt-1">Instruction Quality Analyzer</p>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <div className="flex items-center space-x-1 bg-green-100 px-3 py-1 rounded-full">
-                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                                <span className="text-xs font-medium text-green-800">AI Ready</span>
-                            </div>
+                            {useMockMode ? (
+                                <div className="flex items-center space-x-1 bg-yellow-100 px-3 py-1 rounded-full">
+                                    <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                                    <span className="text-xs font-medium text-yellow-800">Demo Mode</span>
+                                </div>
+                            ) : (
+                                <div className="flex items-center space-x-1 bg-green-100 px-3 py-1 rounded-full">
+                                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                    <span className="text-xs font-medium text-green-800">AI Ready</span>
+                                </div>
+                            )}
                             {hasResults && (
                                 <button
                                     onClick={reset}
@@ -89,27 +59,53 @@ function App() {
                         </div>
                     </div>
 
+                    {/* Mode Indicator Banner */}
+                    {useMockMode && (
+                        <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                            <div className="flex items-start">
+                                <svg className="w-5 h-5 text-yellow-600 mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <div className="flex-1">
+                                    <p className="text-sm font-semibold text-yellow-900">Running in Demo Mode</p>
+                                    <p className="text-xs text-yellow-800 mt-1">
+                                        Chrome Built-in AI is not available. Using simulated AI responses for demonstration.
+                                        Results are generated using pattern matching and will automatically switch to real AI when available.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {/* API Status Indicators */}
                     <div className="mt-4 flex flex-wrap gap-2">
-                        {capabilities.promptAPI && (
-                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                                ✓ Prompt API
-                            </span>
-                        )}
-                        {capabilities.rewriterAPI && (
-                            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-                                ✓ Rewriter API
-                            </span>
-                        )}
-                        {capabilities.summarizerAPI && (
-                            <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
-                                ✓ Summarizer API
-                            </span>
-                        )}
-                        {capabilities.writerAPI && (
+                        {useMockMode ? (
                             <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
-                                ✓ Writer API
+                                🔄 Mock AI Service
                             </span>
+                        ) : (
+                            <>
+                                {capabilities.promptAPI && (
+                                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                        ✓ Prompt API
+                                    </span>
+                                )}
+                                {capabilities.rewriterAPI && (
+                                    <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                                        ✓ Rewriter API
+                                    </span>
+                                )}
+                                {capabilities.summarizerAPI && (
+                                    <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                                        ✓ Summarizer API
+                                    </span>
+                                )}
+                                {capabilities.writerAPI && (
+                                    <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
+                                        ✓ Writer API
+                                    </span>
+                                )}
+                            </>
                         )}
                     </div>
                 </div>
@@ -127,7 +123,7 @@ function App() {
                     <div className="space-y-6">
                         {result.isAnalyzing ? (
                             <div className="bg-white rounded-lg shadow-md">
-                                <LoadingState message="Analyzing instructions with AI..." />
+                                <LoadingState message={useMockMode ? "Simulating AI analysis..." : "Analyzing instructions with AI..."} />
                             </div>
                         ) : hasResults ? (
                             <>
@@ -181,8 +177,11 @@ function App() {
             {/* Footer */}
             <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-sm text-gray-600">
                 <p>
-                    Powered by <span className="font-semibold">Chrome Built-in AI APIs</span> •
-                    All processing happens locally on your device 🔒
+                    {useMockMode ? (
+                        <>Demo Mode • Simulated AI Responses • <span className="font-semibold">No real AI processing</span></>
+                    ) : (
+                        <>Powered by <span className="font-semibold">Chrome Built-in AI APIs</span> • All processing happens locally on your device 🔒</>
+                    )}
                 </p>
             </footer>
         </div>
